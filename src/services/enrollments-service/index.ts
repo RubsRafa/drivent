@@ -7,7 +7,9 @@ import { exclude } from '@/utils/prisma-utils';
 import { CEPRequestedFormat, ViaCEPAddress } from '@/protocols';
 
 async function getAddressFromCEP(cep: string): Promise<ViaCEPAddress> {
-  const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
+  const newCep: string = cep.replace('-', '');
+
+  const result = await request.get(`${process.env.VIA_CEP_API}/${newCep}/json/`);
   const address: CEPRequestedFormat = result.data;
 
   if (!address) {
@@ -53,7 +55,9 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const address = getAddressForUpsert(params.address);
 
   try {
-    // await getAddressFromCEP();
+    const address: ViaCEPAddress = await getAddressFromCEP(params.address.cep);
+    console.log(address);
+    if (address.erro === true) throw invalidDataError(['invalid CEP']);
   } catch {
     throw invalidDataError(['invalid CEP']);
   }
