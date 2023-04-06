@@ -4,16 +4,17 @@ import { invalidDataError, notFoundError } from '@/errors';
 import addressRepository, { CreateAddressParams } from '@/repositories/address-repository';
 import enrollmentRepository, { CreateEnrollmentParams } from '@/repositories/enrollment-repository';
 import { exclude } from '@/utils/prisma-utils';
-import { CEPRequestedFormat } from '@/protocols';
+import { CEPRequestedFormat, ViaCEPAddress } from '@/protocols';
 
-async function getAddressFromCEP(cep: string) {
+async function getAddressFromCEP(cep: string): Promise<ViaCEPAddress> {
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
   const address: CEPRequestedFormat = result.data;
 
   if (!address) {
     throw notFoundError();
   }
-  if (result.data.erro === true) {
+
+  if (result.data.erro && result.data.erro === true) {
     return result.data;
   }
 

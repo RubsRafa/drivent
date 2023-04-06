@@ -3,17 +3,14 @@ export type ApplicationError = {
   message: string;
 };
 
-export type ViaCEPAddress =
-  | {
-      erro: boolean;
-    }
-  | {
-      logradouro: string;
-      complemento: string;
-      bairro: string;
-      cidade: string;
-      uf: string;
-    };
+export type ViaCEPAddress = {
+  logradouro?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
+  erro?: boolean;
+};
 
 export type RequestError = {
   status: number;
